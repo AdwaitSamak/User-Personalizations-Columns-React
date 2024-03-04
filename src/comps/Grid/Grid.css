@@ -1,0 +1,14 @@
+.ag-theme-quartz {
+    display: flex;
+    gap: 5px;
+    flex-wrap: nowrap;
+    flex-direction: column;
+
+  }
+  
+  .ag-theme-quartz .preferencesdiv {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px; /* Adjust as needed */
+    gap: 5px;
+  }
