@@ -1,0 +1,8 @@
+{
+    "users": [
+      { "srno": 1, "fname": "Adwait", "lname": "Samak" },
+      { "srno": 2, "fname": "Ayush", "lname": "Wadalkar" },
+      { "srno": 3, "fname": "Riddhi", "lname": "Patil" }
+    ]
+  }
+  
