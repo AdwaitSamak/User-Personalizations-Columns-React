@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import Grid from "./comps/Grid/Grid";
-// import Checkbox from './comps/Checkbox'
-import AGGridWithCheckbox from "./comps/AgGridCheckboxTable";
-import AgGridCheckboxTable from "./comps/AgGridCheckboxTable";
-// import 'ag-grid-enterprise'
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [rowData, setRowData] = useState([]);
 
   //HRADCODED ENTRIES
@@ -25,32 +21,43 @@ function App() {
   //   // Add more rows as needed
   // ];
 
-  useEffect(() => {
+  // useEffect(() => {     //FETCHING DATA USING FETCH
+  //   const url = "http://localhost:4000/users";
+  //   const response = async function getresponse() {
+  //     try {
+  //       const resp = await fetch(url);
+  //       const data = await resp.json();
+  //       setRowData(data);
+  //     } catch (error) {
+  //       console.log("Error in fetching data", error);
+  //     }
+  //   };
+  //   response();
+  // }, []);
+
+  // const rowData = response.users;   //only this wont work beacause we arwe not waiting for the data to be fetched
+
+  useEffect(() => {     //using axios to get the json data
     const url = "http://localhost:4000/users";
-    const response = async function getresponse() {
+    const fetchData = async () => {
       try {
-        const resp = await fetch(url);
-        const data = await resp.json();
-        setRowData(data);
+        const response = await axios.get(url);
+        setRowData(response.data);
       } catch (error) {
         console.log("Error in fetching data", error);
       }
     };
-    response();
+    fetchData();
   }, []);
 
-  // const rowData = response.users;   //only this wont work beacause we arwe not waiting for the data to be fetched
   const columnDefs = [
     { headerName: "Sr. No.", field: "srno" },
     { headerName: "First Name", field: "fname" },
     { headerName: "Last Name", field: "lname" },
   ];
 
-  return (
-    <>
-      <Grid columnDefs={columnDefs} rowData={rowData} />
-    </>
-  );
+  return <Grid columnDefs={columnDefs} rowData={rowData} />
+
 }
 
 export default App;
