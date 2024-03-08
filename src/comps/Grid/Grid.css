@@ -3,7 +3,7 @@
     gap: 5px;
     flex-wrap: nowrap;
     flex-direction: column;
-
+    overflow: hidden;
   }
   
   .ag-theme-quartz .preferencesdiv {
@@ -11,4 +11,5 @@
     flex-direction: column;
     margin-left: 10px; /* Adjust as needed */
     gap: 5px;
+    overflow: hidden;
   }

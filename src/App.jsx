@@ -44,7 +44,6 @@ function App() {
     { headerName: "Sr. No.", field: "srno" },
     { headerName: "First Name", field: "fname" },
     { headerName: "Last Name", field: "lname" },
-    { headerName: "ID", field: "id" },
   ];
 
   return (

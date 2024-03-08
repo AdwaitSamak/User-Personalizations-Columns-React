@@ -6,17 +6,18 @@ import "ag-grid-enterprise";
 import "./Grid.css";
 
 function Grid({ rowData, columnDefs }) {
-  let gridApi = null
+  // let gridApi = null;
+  let gridApi = useRef(null); //stores gridapi reference between re renders
   const [showPreferences, setShowPreferences] = useState(false);
   const [userpreferencemap, setUserpreferencemap] = useState({});
 
   useEffect(() => {
-    // Load user preferences from local storage when component starts
+    // jab component start hoga, apan local storage se userpreferencemap uthayenge
     const storedPreferences = localStorage.getItem("userpreferencemap");
     if (storedPreferences) {
       setUserpreferencemap(JSON.parse(storedPreferences));
     } else {
-      // If no preferences found, set all columns to be visible by default
+      // initial case me agar userpreference map nahi mila to apan sare columns ko initially true set kr denge, so that all are visible
       const initialPreferences = {};
       columnDefs.forEach((column) => {
         initialPreferences[column.field] = true;
@@ -26,15 +27,23 @@ function Grid({ rowData, columnDefs }) {
   }, [columnDefs]);
 
   useEffect(() => {
-    if (gridApi && columnDefs) {
-      columnDefs.forEach((column) => {
-        gridApi.setColumnVisible(column.field, userpreferencemap[column.field]);
+    if (gridApi.current && columnDefs) {         //if both are present 
+      const visibleColumns = columnDefs.filter(
+        (column) => userpreferencemap[column.field] === true       //filters out those columns which are visible      
+      );
+      // console.log(visibleColumns);    //returns array of objects
+
+      const gridWidth = document.querySelector(".ag-theme-quartz").clientWidth;    //width of the ag grid
+      const columnWidth = gridWidth / visibleColumns.length;    //each column are given equal width according to the number of visible column count
+
+      visibleColumns.forEach((column) => {     //for each column we chnage width
+        gridApi.current.setColumnWidth(column.field, columnWidth);
       });
     }
-  }, [userpreferencemap]);
+  }, [userpreferencemap, columnDefs]);        //agar visible columns change hue(userpreferencemap) ya phir columns change hue, then this will trigger useeffect hook
 
   const onGridReady = (params) => {
-    gridApi=params.api // Initialize the grid and give access to the grid API
+    gridApi.current = params.api; // Initialize the grid and give access to the grid API
   };
 
   const handleOnChangeCheckbox = (field, checked) => {
@@ -52,18 +61,24 @@ function Grid({ rowData, columnDefs }) {
 
   const savepreferences = (e) => {
     e.preventDefault();
-    localStorage.setItem("userpreferencemap", JSON.stringify(userpreferencemap));
+    localStorage.setItem(
+      "userpreferencemap",
+      JSON.stringify(userpreferencemap)
+    );
   };
 
   return (
-    <div className="ag-theme-quartz" style={{ height: 500, width: 610 }}>
+    <div className="ag-theme-quartz" style={{ height: 500, width: 650 }}>
       <AgGridReact
         rowData={rowData}
-        columnDefs={columnDefs.filter((column) => userpreferencemap[column.field])}
+        columnDefs={columnDefs.filter(
+          (column) => userpreferencemap[column.field]
+        )}
         onGridReady={onGridReady}
+        suppressHorizontalScroll={true}              //disables horizontal scroll
       />
       <div className="preferences">
-        <button onClick={handlePreferences}>Preferences</button>
+        <button onClick={handlePreferences} style={{width:100, height:40}}>Preferences</button>
       </div>
       <div>
         {showPreferences && (
@@ -73,7 +88,9 @@ function Grid({ rowData, columnDefs }) {
                 <input
                   type="checkbox"
                   checked={userpreferencemap[column.field]}
-                  onChange={(e) => handleOnChangeCheckbox(column.field, e.target.checked)}
+                  onChange={(e) =>
+                    handleOnChangeCheckbox(column.field, e.target.checked)
+                  }
                 />
                 {column.headerName}
               </label>
@@ -81,7 +98,7 @@ function Grid({ rowData, columnDefs }) {
           </div>
         )}
       </div>
-      <button onClick={savepreferences}>Save</button>
+      <button onClick={savepreferences} style={{width:100, height:40}}>Save</button>
     </div>
   );
 }
