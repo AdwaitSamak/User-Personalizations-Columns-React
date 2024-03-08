@@ -27,20 +27,22 @@ function Grid({ rowData, columnDefs }) {
   }, [columnDefs]);
 
   useEffect(() => {
-    if (gridApi.current && columnDefs) {         //if both are present 
+    if (columnDefs) {
+      //if columns are present, we create an array of visible columns and change their width
       const visibleColumns = columnDefs.filter(
-        (column) => userpreferencemap[column.field] === true       //filters out those columns which are visible      
+        (column) => userpreferencemap[column.field] === true //filters out those columns which are visible
       );
       // console.log(visibleColumns);    //returns array of objects
 
-      const gridWidth = document.querySelector(".ag-theme-quartz").clientWidth;    //width of the ag grid
-      const columnWidth = gridWidth / visibleColumns.length;    //each column are given equal width according to the number of visible column count
+      const gridWidth = document.querySelector(".ag-theme-quartz").clientWidth; //width of the ag grid
+      const columnWidth = gridWidth / visibleColumns.length; //each column are given equal width according to the number of visible column count
 
-      visibleColumns.forEach((column) => {     //for each column we chnage width
+      visibleColumns.forEach((column) => {
+        //for each column we chnage width
         gridApi.current.setColumnWidth(column.field, columnWidth);
       });
     }
-  }, [userpreferencemap, columnDefs]);        //agar visible columns change hue(userpreferencemap) ya phir columns change hue, then this will trigger useeffect hook
+  }, [userpreferencemap, columnDefs]); //agar visible columns change hue(userpreferencemap) ya phir columns change hue, then this will trigger useeffect hook
 
   const onGridReady = (params) => {
     gridApi.current = params.api; // Initialize the grid and give access to the grid API
@@ -48,7 +50,7 @@ function Grid({ rowData, columnDefs }) {
 
   const handleOnChangeCheckbox = (field, checked) => {
     setUserpreferencemap((prevPreferences) => ({
-      ...prevPreferences,
+      ...prevPreferences, //apan spread kr rhe hai previous map ko and just changing the field changed field
       [field]: checked,
     }));
   };
@@ -75,30 +77,31 @@ function Grid({ rowData, columnDefs }) {
           (column) => userpreferencemap[column.field]
         )}
         onGridReady={onGridReady}
-        suppressHorizontalScroll={true}              //disables horizontal scroll
+        suppressHorizontalScroll={true} //disables horizontal scroll
       />
-      <div className="preferences">
-        <button onClick={handlePreferences} style={{width:100, height:40}}>Preferences</button>
+
+      <div className="buttonsdiv">
+        <button onClick={handlePreferences}>Preferences</button>
+        <div>
+          {showPreferences && (
+            <div className="preferencesdiv">
+              {columnDefs.map((column) => (
+                <label key={column.field}>
+                  <input
+                    type="checkbox"
+                    checked={userpreferencemap[column.field]}
+                    onChange={(e) =>
+                      handleOnChangeCheckbox(column.field, e.target.checked)
+                    }
+                  />
+                  {column.headerName}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+        <button onClick={savepreferences}>Save</button>
       </div>
-      <div>
-        {showPreferences && (
-          <div className="preferencesdiv">
-            {columnDefs.map((column) => (
-              <label key={column.field}>
-                <input
-                  type="checkbox"
-                  checked={userpreferencemap[column.field]}
-                  onChange={(e) =>
-                    handleOnChangeCheckbox(column.field, e.target.checked)
-                  }
-                />
-                {column.headerName}
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      <button onClick={savepreferences} style={{width:100, height:40}}>Save</button>
     </div>
   );
 }
