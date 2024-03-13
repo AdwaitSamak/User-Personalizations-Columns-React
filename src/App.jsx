@@ -21,7 +21,7 @@ function App() {
   //   // Add more rows as needed
   // ];
 
-  // useEffect(() => {     //FETCHING DATA USING FETCH
+  // useEffect(() => {            ---//FETCHING DATA USING FETCH---
   //   const url = "http://localhost:4000/users";
   //   const response = async function getresponse() {
   //     try {

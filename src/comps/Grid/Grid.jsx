@@ -4,7 +4,8 @@ import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the 
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-enterprise";
 import "./Grid.css";
-import axios from 'axios';
+import AddEntryPopup from "../Popup/AddEntryPopup";
+import axios from "axios";
 
 function Grid({ rowData, columnDefs }) {
   // let gridApi = null;
@@ -70,6 +71,11 @@ function Grid({ rowData, columnDefs }) {
     );
   };
 
+  const addEntries = () => {};
+  const editEntries = () => {};
+
+  const deleteEntries = () => {};
+
   return (
     <div className="ag-theme-quartz" style={{ height: 500, width: 650 }}>
       <AgGridReact
@@ -91,6 +97,7 @@ function Grid({ rowData, columnDefs }) {
                   <input
                     type="checkbox"
                     checked={userpreferencemap[column.field]}
+                    disabled={column.field === "srno"}   //we dont want user to hide srno, we we disbale toggling checkbox for it
                     onChange={(e) =>
                       handleOnChangeCheckbox(column.field, e.target.checked)
                     }
@@ -102,6 +109,11 @@ function Grid({ rowData, columnDefs }) {
           )}
         </div>
         <button onClick={savepreferences}>Save</button>
+      </div>
+      <div className="crud-buttons-div">
+        <button onClick={addEntries}>Add</button>
+        <button onClick={editEntries}>Edit</button>
+        <button onClick={deleteEntries}>Delete</button>
       </div>
     </div>
   );
